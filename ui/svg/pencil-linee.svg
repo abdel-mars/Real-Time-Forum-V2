@@ -1,0 +1,14 @@
+<!-- save as create-post-icon.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" role="img" aria-label="Create post icon">
+  <title>Create Post</title>
+  <!-- document outline -->
+  <path fill="none" stroke="#e50914" stroke-width="1.6" d="M6 2h8l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/>
+  <!-- folded corner -->
+  <path fill="#e50914" d="M14 2v4h4"/>
+  <!-- plus sign -->
+  <g transform="translate(6,8)">
+    <rect x="4" y="0" width="2" height="8" fill="#e50914" rx="0.4"/>
+    <rect x="0" y="4" width="10" height="2" fill="#e50914" rx="0.4"/>
+  </g>
+</svg>
+

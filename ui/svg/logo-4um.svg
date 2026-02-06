@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 160" role="img" aria-label="4um logo">
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="b1"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="b2"/>
+      <feMerge>
+        <feMergeNode in="b2"/>
+        <feMergeNode in="b1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style>
+      .word {
+        font-family: "Cinzel Decorative", serif;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        fill: #E50914;
+        filter: url(#glow);
+      }
+      .bar { fill: #E50914; opacity: .9; }
+    </style>
+  </defs>
+  <text class="word" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="88">4um</text>
+  <rect class="bar" x="160" y="110" width="200" height="4" rx="2"/>
+</svg>
