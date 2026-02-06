@@ -11,29 +11,29 @@ func InitDB(datasource string) {
 	var err error
 	repo.DB, err = sql.Open(repo.DATABASE_NAME, datasource)
 	if err != nil {
-		log.Fatalf(repo.DATABASE_NAME, err)
+		log.Fatalf(repo.FAILED_OPEN_DATABES, err)
 	}
 	err = CreateTabale(repo.DB)
 	if err != nil {
-		log.Fatalf(repo.FAILED_CREATE_TABLE, err)
+		log.Fatalf(repo.FAILED_CREAT_TABELS, err)
 	}
 	InitData()
 }
 
 func CreateTabale(db *sql.DB) error {
-	schema, err := os.ReadFile(repo.DATABASE_SHEMA_LOCATION)
+	schema, err := os.ReadFile(repo.DATABASE_SCHEMA_LOCATION)
 	if err != nil {
 		return err
 	}
 	_, err = db.Exec(string(schema))
 	if err != nil {
-	return err
+		return err
 	}
 	db.Exec(`ALTER TABLE users ADD COLUMN online BOOLEAN DEFAULT 0`)
-	return nil;
+	return nil
 }
 
-fucn InitData() {
+func InitData() {
 	for key := range repo.IT_MAJOR_FIELDS {
 		ret, err := repo.DB.Exec(repo.INIT_FIELDS_QUERY, key)
 		if err != nil {
@@ -64,4 +64,3 @@ func CloseDB() {
 		log.Fatalf(repo.FAILED_CLOSING_DATABASE, err)
 	}
 }
-

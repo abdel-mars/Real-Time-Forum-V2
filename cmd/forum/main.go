@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import  (
+	"forum/internal/service"
+	"fmt"
+)
 
 func main() {
 	service.InitDependencies()
