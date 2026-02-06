@@ -84,8 +84,8 @@ const (
 	DATABASE_NAME = "sqlite3"
 
 	// database paths
-	DATABASE_LOCATION        = "./database/forum.db"
-	DATABASE_SCHEMA_LOCATION = "./database/schema.sql"
+	DATABASE_LOCATION        = "../../database/forum.db"
+	DATABASE_SCHEMA_LOCATION = "../../database/schema.sql"
 
 	// error messages
 	FAILED_OPEN_DATABES     = "failed to open the database: %v"
