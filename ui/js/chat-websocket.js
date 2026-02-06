@@ -1,0 +1,248 @@
+import { displayMessage, scrollToBottom, showTypingIndicator, hideTypingIndicator, messageOffset } from "./chat-ui.js"
+import { updateUserListOrder, addUnreadMessage, updateTotalUnreadBadge, showNotification } from "./chat-users.js"
+
+// WebSocket state
+let chatReconnectAttempts = 0;
+const MAX_CHAT_RECONNECT_ATTEMPTS = 5;
+
+// Set up WebSocket for chat
+export function setupChatWebSocket(user1, user2) {
+    try {
+        console.log('[WebSocket] setupChatWebSocket called with user1:', user1, 'user2:', user2);
+        console.log('[WebSocket] Current window.activeChatUsername:', window.activeChatUsername);
+        console.log('[WebSocket] Current window.currentUsername:', window.currentUsername);
+        
+        // Close existing chat WebSocket if any
+        if (window.chatWebSocket) {
+            try {
+                console.log('[WebSocket] Closing existing WebSocket');
+                window.chatWebSocket.close();
+            } catch (e) {
+                console.error('Error closing existing WebSocket:', e);
+            }
+            window.chatWebSocket = null;
+        }
+        
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const host = window.location.hostname;
+        const port = window.location.port ? `:${window.location.port}` : '';
+        const wsUrl = `${protocol}//${host}${port}/room?user1=${encodeURIComponent(user1)}&user2=${encodeURIComponent(user2)}&username=${encodeURIComponent(user1)}`;
+        
+        console.log('[WebSocket] Full URL:', wsUrl);
+        console.log('[WebSocket] Connecting to room: user1=' + user1 + ', user2=' + user2);
+        
+        try {
+            window.chatWebSocket = new WebSocket(wsUrl);
+        } catch (error) {
+            console.error('[WebSocket] Failed to create WebSocket:', error);
+            return;
+        }
+        // Generate a unique token for this connection to avoid stale handlers
+        const socketToken = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        window.currentChatSocketToken = socketToken;
+        
+        window.chatWebSocket.addEventListener('open', () => {
+            console.log('[WebSocket] Connection opened');
+            chatReconnectAttempts = 0;
+        });
+        
+        window.chatWebSocket.addEventListener('message', (event) => {
+            // Ignore events from stale sockets
+            if (socketToken !== window.currentChatSocketToken) {
+                console.log('[WebSocket] Ignoring message from stale socket');
+                return;
+            }
+            try {
+                console.log('[WebSocket] Message received:', event.data);
+                const data = JSON.parse(event.data);
+                
+                if (data.type === 'message') {
+                    const isSent = data.name === window.currentUsername;
+                    console.log("Received message:", data);
+                    console.log("Is sent:", isSent);
+                    
+                    try {
+                        hideTypingIndicator();
+                        
+                        if (!isSent && data.name === window.activeChatUsername) {
+                            const message = {
+                                message: data.message,
+                                sender_id: isSent ? window.currentUserId : window.activeChatUserId,
+                                receiver_id: isSent ? window.activeChatUserId : window.currentUserId,
+                                created_at: data.created_at || new Date().toISOString()
+
+                            };
+
+                            
+                            displayMessage(message, isSent);
+                            scrollToBottom();
+                        }
+                        
+                        if (!isSent) {
+                            addUnreadMessage(data.name);
+                            showNotification(data.name);
+                        }
+                        
+                        if (isSent) {
+                            updateUserListOrder(window.activeChatUsername, data.message);
+                        } else {
+                            updateUserListOrder(data.name, data.message);
+                        }
+                        
+                        updateTotalUnreadBadge();
+                    } catch (msgError) {
+                        console.error('[WebSocket] Error processing message type:', msgError);
+                    }
+                } else if (data.type === 'typing') {
+                    try {
+                        if (data.name !== window.currentUsername && data.name === window.activeChatUsername) {
+                            showTypingIndicator();
+                            setTimeout(() => {
+                                hideTypingIndicator();
+                                console.log('[WebSocket] Hiding typing indicator due to timeout');
+                            }, 3000);
+                        }
+                    } catch (typingError) {
+                        console.error('[WebSocket] Error showing typing indicator:', typingError);
+                    }
+                } else if (data.type === 'stop_typing') {
+                    try {
+                        if (data.name !== window.currentUsername && data.name === window.activeChatUsername) {
+                            hideTypingIndicator();
+                        }
+                    } catch (stopTypingError) {
+                        console.error('[WebSocket] Error hiding typing indicator:', stopTypingError);
+                    }
+                }
+            } catch (error) {
+                console.error('[WebSocket] Error processing message:', error, event.data);
+            }
+        });
+
+        window.chatWebSocket.addEventListener('error', (error) => {
+            console.error('[WebSocket] Error:', error);
+        });
+        
+        window.chatWebSocket.addEventListener('close', (event) => {
+            console.log(`[WebSocket] Connection closed. Code: ${event.code}, Reason: ${event.reason}, Clean: ${event.wasClean}`);
+            window.chatWebSocket = null;
+            
+            // Clear typing indicator on disconnect to prevent zombie typing state
+            hideTypingIndicator();
+            
+            // Only reconnect if this socket is still the active one for the same peer
+            if (
+                socketToken === window.currentChatSocketToken &&
+                window.activeChatUsername === user2 &&
+                window.currentUsername === user1 &&
+                chatReconnectAttempts < MAX_CHAT_RECONNECT_ATTEMPTS
+            ) {
+                chatReconnectAttempts++;
+                const delay = Math.min(1000 * (2 ** (chatReconnectAttempts - 1)), 5000);
+                console.log(`[WebSocket] Reconnecting in ${delay}ms (attempt ${chatReconnectAttempts})`);
+                
+                setTimeout(() => {
+                    // Re-check the token and active user before reconnecting
+                    if (
+                        socketToken === window.currentChatSocketToken &&
+                        window.activeChatUsername === user2 &&
+                        window.currentUsername === user1
+                    ) {
+                        setupChatWebSocket(user1, user2);
+                    }
+                }, delay);
+            } else if (chatReconnectAttempts >= MAX_CHAT_RECONNECT_ATTEMPTS) {
+                alert('Lost connection to chat. Please refresh the page.');
+            }
+        });
+    } catch (setupError) {
+        console.error('[WebSocket] Fatal error in setupChatWebSocket:', setupError);
+    }
+}
+
+// Typing indicator functions
+export function handleTyping() {
+    if (!window.chatWebSocket || window.chatWebSocket.readyState !== WebSocket.OPEN) {
+        return;
+    }
+    
+    if (!window.isTyping) {
+        window.isTyping = true;
+        try {
+            window.chatWebSocket.send(JSON.stringify({
+                type: 'typing',
+                name: window.currentUsername
+            }));
+        } catch (e) {
+            return;
+        }
+    }
+    
+    clearTimeout(window.typingTimer);
+    window.typingTimer = setTimeout(() => {
+        if (window.isTyping && window.chatWebSocket && window.chatWebSocket.readyState === WebSocket.OPEN) {
+            window.isTyping = false;
+            try {
+                window.chatWebSocket.send(JSON.stringify({
+                    type: 'stop_typing',
+                    name: window.currentUsername
+                }));
+            } catch (e) {}
+        }
+    }, 1000);
+}
+
+// Send message
+export function sendMessage() {
+    const chatInput = document.getElementById('chatMessageInput');
+    if (!chatInput) return;
+
+    const message = chatInput.value.trim();
+    if (!message || !window.activeChatUsername) {
+        console.log('[sendMessage] Cannot send: message empty or activeChatUsername not set');
+        return;
+    }
+
+    console.log('[sendMessage] Sending message to:', window.activeChatUsername);
+    console.log('[sendMessage] Current user:', window.currentUsername);
+    console.log('[sendMessage] WebSocket state:', window.chatWebSocket?.readyState);
+
+    // Immediately stop typing and clear input to prevent conflicts
+    window.isTyping = false;
+    clearTimeout(window.typingTimer);
+    chatInput.value = '';
+
+    if (!window.chatWebSocket || window.chatWebSocket.readyState !== WebSocket.OPEN) {
+        console.error('[sendMessage] WebSocket not open! State:', window.chatWebSocket?.readyState);
+        chatInput.value = message;
+        return;
+    }
+
+    const messageData = {
+        type: 'message',
+        name: window.currentUsername,
+        message: message,
+        sender_id: window.currentUserId
+    };
+    
+    console.log('[sendMessage] Message data:', messageData);
+
+    try {
+        window.chatWebSocket.send(JSON.stringify(messageData));
+        
+        // Display the message locally for the sender immediately
+        const localMessage = {
+            message: message,
+            sender_id: window.currentUserId,
+            receiver_id: window.activeChatUserId,
+            created_at: new Date().toISOString()
+        };
+        displayMessage(localMessage, true);
+        scrollToBottom();
+        updateUserListOrder(window.activeChatUsername, message);
+        messageOffset++;
+    } catch (error) {
+        chatInput.value = message;
+    }
+}
+
