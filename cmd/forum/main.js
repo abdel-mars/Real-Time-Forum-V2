@@ -21,12 +21,12 @@ window.onload = () => {
     <!-- Pagination Section -->
     <nav class="pagination" aria-label="Pagination navigation">
       <span class="pagination__link pagination__link--prev" style="opacity: .3;">
-        <img src="/static/svg/left.svg" alt="previous page"> Previous Page
+        <img src="/svg/left.svg" alt="previous page"> Previous Page
       </span>
       <span class="pagination__current" aria-current="page">Page 1</span>
       <span class="pagination__link pagination__l.likebtn,
 ink--next" style="opacity: .3;">
-        Next Page <img src="/static/svg/right.svg" alt="next page">
+        Next Page <img src="/svg/right.svg" alt="next page">
       </span>
     </nav>
   `;
