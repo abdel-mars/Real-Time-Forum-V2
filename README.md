@@ -7,7 +7,7 @@ A modern, real-time forum application built with Go backend and vanilla JavaScri
 ![WebSocket](https://img.shields.io/badge/WebSocket-Live-green?style=flat)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat&logo=javascript)
 
-## 📋 Table of Contents
+##  Table of Contents
 
 - [Overview](#overview)
 - [Architecture](#architecture)
@@ -23,13 +23,13 @@ A modern, real-time forum application built with Go backend and vanilla JavaScri
 
 ---
 
-## 🎯 Overview
+##  Overview
 
 Real-Time Forum V2 is a full-stack web application that enables users to create posts, comment, like/dislike content, and engage in real-time private messaging. The application uses a Go backend with SQLite database and a vanilla JavaScript frontend with WebSocket support for live updates.
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ### High-Level System Architecture
 
@@ -188,7 +188,7 @@ graph LR
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 ### Backend
 - **Language**: Go 1.24
@@ -214,7 +214,7 @@ require (
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 Real-Time-Forum-V2/
@@ -279,7 +279,7 @@ Real-Time-Forum-V2/
 
 ---
 
-## ⚙️ How It Works
+##  How It Works
 
 ### 1. Application Startup
 
@@ -466,7 +466,7 @@ graph LR
 
 ---
 
-## ✨ Features
+##  Features
 
 ### User Management
 - ✅ User registration with validation
@@ -504,7 +504,7 @@ graph LR
 
 ---
 
-## 🚀 Installation
+##  Installation
 
 ### Prerequisites
 - Go 1.24 or higher
@@ -545,7 +545,7 @@ Open your browser and navigate to: http://localhost:8080
 
 ---
 
-## 📖 Usage
+##  Usage
 
 ### Starting the Server
 
@@ -587,7 +587,7 @@ go run cmd/forum/main.go
 
 ---
 
-## 📡 API Documentation
+##  API Documentation
 
 ### Authentication Endpoints
 
@@ -671,7 +671,7 @@ ws.send(JSON.stringify({
 
 ---
 
-## 🗄️ Database Schema
+##  Database Schema
 
 ### Entity Relationship Diagram
 
@@ -800,7 +800,7 @@ erDiagram
 
 ---
 
-## 🔌 WebSocket Communication
+##  WebSocket Communication
 
 ### Connection Flow
 
@@ -891,7 +891,7 @@ The Hub manages all WebSocket connections and rooms:
 
 ---
 
-## 🎨 Frontend Architecture
+##  Frontend Architecture
 
 ### Module Breakdown
 
@@ -943,7 +943,7 @@ The frontend uses a simple state management approach:
 
 ---
 
-## 🔒 Security Features
+##  Security Features
 
 ### Authentication
 - **Password Hashing**: bcrypt with salt
@@ -966,7 +966,7 @@ The frontend uses a simple state management approach:
 
 ---
 
-## 🧪 Testing
+##  Testing
 
 ### Manual Testing
 
@@ -996,7 +996,7 @@ The frontend uses a simple state management approach:
 
 ---
 
-## 🚧 Future Enhancements
+##  Future Enhancements
 
 - [ ] Add unit tests for backend handlers
 - [ ] Add integration tests for API endpoints
@@ -1017,13 +1017,13 @@ The frontend uses a simple state management approach:
 
 ---
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License.
 
 ---
 
-## 👥 Contributing
+##  Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -1035,10 +1035,10 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 📞 Support
+##  Support
 
 For issues, questions, or suggestions, please open an issue on GitHub.
 
 ---
 
-**Built with ❤️ using Go and JavaScript**
+**Built by Mars
