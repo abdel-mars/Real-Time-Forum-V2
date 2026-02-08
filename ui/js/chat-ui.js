@@ -18,7 +18,7 @@ export async function startChatWithUser(username) {
   console.log('[Chat UI] startChatWithUser called with username:', username);
   console.log('[Chat UI] Current window.currentUsername:', window.currentUsername);
   console.log('[Chat UI] Previous window.activeChatUsername:', window.activeChatUsername);
-  
+
   // FIRST: Close old WebSocket and clear old state
   if (window.chatWebSocket) {
     try {
@@ -29,7 +29,7 @@ export async function startChatWithUser(username) {
     }
     window.chatWebSocket = null;
   }
-  
+
   // Clear message container and reset offset BEFORE changing active user
   const container = document.getElementById("chatMessagesContainer");
   if (container) {
@@ -37,10 +37,10 @@ export async function startChatWithUser(username) {
   }
   messageOffset = 0;
   lastMessageDate = null;
-  
+
   // Clear typing indicator when switching chats
   hideTypingIndicator();
-  
+
   window.activeChatUsername = username;
   console.log('[Chat UI] Updated window.activeChatUsername to:', window.activeChatUsername);
   // Clear unread count for this user immediately
@@ -238,9 +238,8 @@ export function createMessageElement(message, isSent) {
   wrapper.className = `message-row ${isSent ? "sent" : "received"}`;
 
   const bubble = document.createElement("div");
-  bubble.className = `message-bubble ${
-    isSent ? "bubble-sent" : "bubble-received"
-  }`;
+  bubble.className = `message-bubble ${isSent ? "bubble-sent" : "bubble-received"
+    }`;
 
   // Show sender name (you or the other user)
   const name = document.createElement("div");
@@ -288,17 +287,33 @@ function setupSendMessageHandler() {
   const input = document.getElementById("chatMessageInput");
   const btn = document.getElementById("chatSendBtn");
 
+  if (!input || !btn) {
+    console.error("Chat input or button not found in setupSendMessageHandler");
+    return;
+  }
+
   // Remove old listeners first
-  btn.replaceWith(btn.cloneNode(true));
-  input.replaceWith(input.cloneNode(true));
+  // Note: replaceWith(clone) removes event listeners attached via addEventListener
+  // It also clears properties like onclick if they were on the old element
+  const inputClone = input.cloneNode(true);
+  const btnClone = btn.cloneNode(true);
+
+  input.replaceWith(inputClone);
+  btn.replaceWith(btnClone);
 
   const newBtn = document.getElementById("chatSendBtn");
   const newInput = document.getElementById("chatMessageInput");
 
-  newBtn.onclick = sendMessage;
+  newBtn.onclick = (e) => {
+    e.preventDefault(); // Prevent any default button behavior
+    console.log("Send button clicked");
+    sendMessage();
+  };
+
   newInput.onkeypress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
+      console.log("Enter key pressed");
       sendMessage();
     }
   };
@@ -306,6 +321,11 @@ function setupSendMessageHandler() {
   newInput.oninput = () => {
     handleTyping();
   };
+
+  // Ensure input is enabled and focused
+  newInput.disabled = false;
+  newBtn.disabled = false;
+  newInput.focus();
 }
 
 export function showTypingIndicator() {
