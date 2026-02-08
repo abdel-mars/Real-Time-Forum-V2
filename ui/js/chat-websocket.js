@@ -96,11 +96,20 @@ export function setupChatWebSocket(user1, user2) {
                 } else if (data.type === 'typing') {
                     try {
                         if (data.name !== window.currentUsername && data.name === window.activeChatUsername) {
+                            // Clear any existing safety timeout
+                            if (window.typingSafetyTimeout) {
+                                clearTimeout(window.typingSafetyTimeout);
+                                window.typingSafetyTimeout = null;
+                            }
+
                             showTypingIndicator();
-                            setTimeout(() => {
+
+                            // Set a safety timeout to hide the indicator if we don't get another 'typing' 
+                            // or 'stop_typing' event within 5 seconds (providing a buffer over the 1.5s heartbeat)
+                            window.typingSafetyTimeout = setTimeout(() => {
                                 hideTypingIndicator();
-                                console.log('[WebSocket] Hiding typing indicator due to timeout');
-                            }, 3000);
+                                console.log('[WebSocket] Hiding typing indicator due to safety timeout');
+                            }, 5000);
                         }
                     } catch (typingError) {
                         console.error('[WebSocket] Error showing typing indicator:', typingError);
@@ -108,6 +117,11 @@ export function setupChatWebSocket(user1, user2) {
                 } else if (data.type === 'stop_typing') {
                     try {
                         if (data.name !== window.currentUsername && data.name === window.activeChatUsername) {
+                            // Clear safety timeout as we have an explicit stop
+                            if (window.typingSafetyTimeout) {
+                                clearTimeout(window.typingSafetyTimeout);
+                                window.typingSafetyTimeout = null;
+                            }
                             hideTypingIndicator();
                         }
                     } catch (stopTypingError) {
@@ -166,30 +180,46 @@ export function handleTyping() {
         return;
     }
 
-    if (!window.isTyping) {
+    const now = Date.now();
+    const heartbeatInterval = 1500; // Send "typing" frequently (1.5s) to keep it alive
+
+    // Send typing status if:
+    // 1. We are starting a new typing session (!window.isTyping)
+    // 2. We are resuming typing after a pause where stop_typing sent (!window.isTyping)
+    // 3. We are typing continuously and need a heartbeat (now - last > interval)
+    if (!window.isTyping || !window.lastTypingSentTime || (now - window.lastTypingSentTime > heartbeatInterval)) {
         window.isTyping = true;
         try {
             window.chatWebSocket.send(JSON.stringify({
                 type: 'typing',
                 name: window.currentUsername
             }));
+            window.lastTypingSentTime = now;
+            console.log(`[WebSocket] Sent typing heartbeat at ${now}`);
         } catch (e) {
+            console.error('[WebSocket] Error sending typing status:', e);
             return;
         }
     }
 
+    // Reset the "stop typing" timer - keep typing active
     clearTimeout(window.typingTimer);
     window.typingTimer = setTimeout(() => {
-        if (window.isTyping && window.chatWebSocket && window.chatWebSocket.readyState === WebSocket.OPEN) {
+        if (window.chatWebSocket && window.chatWebSocket.readyState === WebSocket.OPEN) {
             window.isTyping = false;
+            // Reset last sent time so next key press triggers immediate send
+            window.lastTypingSentTime = 0;
             try {
                 window.chatWebSocket.send(JSON.stringify({
                     type: 'stop_typing',
                     name: window.currentUsername
                 }));
-            } catch (e) { }
+                console.log(`[WebSocket] Sent stop_typing at ${Date.now()}`);
+            } catch (e) {
+                console.error('[WebSocket] Error sending stop_typing:', e);
+            }
         }
-    }, 1000);
+    }, 1000); // 1 second of inactivity triggers stop
 }
 
 // Send message
