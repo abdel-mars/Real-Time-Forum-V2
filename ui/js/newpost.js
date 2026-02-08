@@ -39,7 +39,7 @@ export async function NewPost(categories = [], user) {
   }
   if (mobileHeader) {
     mobileHeader.innerHTML = `
-      <img id="Logo" src="/assets/logo-4um.svg" alt="4um" class="brand-logo" width="140" height="auto">
+      <img id="Logo" src="/svg/logo-4um.svg" alt="4um" class="brand-logo" width="140" height="auto">
       <div class="mobileHeader_profile">
         <nav class="profile-nav">
           <ul>

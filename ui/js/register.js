@@ -37,7 +37,7 @@ export async function registerBuilding(user) {
   form.method = "POST";
 
   form.innerHTML = `
-    <img src="/assets/logo-4um.svg" alt="4UM" class="login-logo">
+    <img src="/svg/logo-4um.svg" alt="4UM" class="login-logo">
     <h2>Join the community!</h2>
     <input type="text" name="username" id="username" minlength="3" maxlength="32" placeholder="Nickname" required />
     <input type="number" name="age" id="age" min="13" max="120" placeholder="Age" required />

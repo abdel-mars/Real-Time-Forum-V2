@@ -61,7 +61,7 @@ export async function homeBuild(user) {
   // Logo handler !!
   const logoDiv = createEl("div", "header__logo", `
     <a id = "Logo" class="header__logo-link">
-      <img id = "Logo" src="/assets/logo-4um.svg" alt="4um" class="brand-logo" width="140" height="auto">
+      <img id = "Logo" src="/svg/logo-4um.svg" alt="4um" class="brand-logo" width="140" height="auto">
     </a>
   `);
 
