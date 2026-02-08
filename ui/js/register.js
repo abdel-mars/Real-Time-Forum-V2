@@ -8,7 +8,7 @@ export async function registerBuilding(user) {
     const formsCSS = document.createElement('link');
     formsCSS.id = "cssl9dim";
     formsCSS.rel = 'stylesheet';
-    formsCSS.href = '/static/css/forms.css';
+    formsCSS.href = '/css/forms.css';
     document.head.appendChild(formsCSS);
   }
   const mainContent = document.querySelector('.main-content');
@@ -37,7 +37,7 @@ export async function registerBuilding(user) {
   form.method = "POST";
 
   form.innerHTML = `
-    <img src="/static/assets/logo-4um.svg" alt="4UM" class="login-logo">
+    <img src="/assets/logo-4um.svg" alt="4UM" class="login-logo">
     <h2>Join the community!</h2>
     <input type="text" name="username" id="username" minlength="3" maxlength="32" placeholder="Nickname" required />
     <input type="number" name="age" id="age" min="13" max="120" placeholder="Age" required />

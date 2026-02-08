@@ -319,7 +319,7 @@ textarea#content {
   margin-bottom: var(--padding-lg);
   padding: var(--padding-xl);
   overflow: hidden;
-  background-image: url("/static/svg/bg-grid.svg");
+  background-image: url("/svg/bg-grid.svg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;

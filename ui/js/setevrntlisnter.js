@@ -116,7 +116,7 @@ export async function fetchPosts(filter = "", page=1) {
       //i will switch this to be not clicked
       smallActions.innerHTML = `
         <div href="/post?Id=${Id}#comment">
-          <img class="comment-icon" src="/static/svg/commentt.svg" alt="comment" /> ${CommentsCount}
+          <img class="comment-icon" src="/svg/commentt.svg" alt="comment" /> ${CommentsCount}
         </div>
       `;
 
@@ -162,18 +162,18 @@ function renderPagination(pagination) {
   container.innerHTML = `
     ${pagination.HasPrev
       ? `<a href="#" class="pagination__link pagination__link--prev" data-page="${pagination.PrevPage}">
-           <img src="/static/svg/left.svg" alt="previous page"> Previous
+           <img src="/svg/left.svg" alt="previous page"> Previous
          </a>`
       : `<span class="pagination__link pagination__link--prev" style="opacity:.3;">
-           <img src="/static/svg/left.svg" alt="previous page">
+           <img src="/svg/left.svg" alt="previous page">
          </span>`}
     <span class="pagination__current">Page ${pagination.CurrentPage}</span>
     ${pagination.HasNext
       ? `<a href="#" class="pagination__link pagination__link--next" data-page="${pagination.NextPage}">
-           Next <img src="/static/svg/right.svg" alt="next page">
+           Next <img src="/svg/right.svg" alt="next page">
          </a>`
       : `<span class="pagination__link pagination__link--next" style="opacity:.3;">
-           <img src="/static/svg/right.svg" alt="next page">
+           <img src="/svg/right.svg" alt="next page">
          </span>`}
   `;
   //  Attach click events to the active links 

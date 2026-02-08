@@ -25,7 +25,7 @@ export async function loginbuilding(user) {
     const formsCSS = document.createElement('link');
     formsCSS.id = "Csslogin"
     formsCSS.rel = 'stylesheet';
-    formsCSS.href = '/static/css/forms.css';
+    formsCSS.href = '/css/forms.css';
     document.head.appendChild(formsCSS);
   }
 
@@ -61,7 +61,7 @@ export async function loginbuilding(user) {
   const container = createEl("div", "login-section");
   const form = createEl("form", "login-card");
   form.innerHTML = `
-    <img src="/static/assets/logo-4um.svg" alt="4UM" class="login-logo">
+    <img src="/assets/logo-4um.svg" alt="4UM" class="login-logo">
     <h2>Welcome Back!</h2>
     <label>Username or Email</label>
     <input type="text" name="username" id="username" minlength="3" maxlength="32" placeholder="Enter your username" required />

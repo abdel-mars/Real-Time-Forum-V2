@@ -7,39 +7,39 @@ import (
 )
 
 var (
-	EmailExp 		*regexp.Regexp
-	UsernameExp 	*regexp.Regexp
+	EmailExp        *regexp.Regexp
+	UsernameExp     *regexp.Regexp
 	GLOBAL_TEMPLATE *template.Template
-	DB 				*sql.DB
+	DB              *sql.DB
 )
 
 type User struct {
-	Id       	  int
-	Username 	  string
-	Email		  string
+	Id            int
+	Username      string
+	Email         string
 	Password_hash string
-	Created_at 	  string
-	Updated_at	  string
+	Created_at    string
+	Updated_at    string
 }
 
 type Post struct {
-	Id       	  	 int
-	Title		  	 string
-	PublisherId   	 int
-	Content 	  	 string
-	Publisher 	  	 string
-	Initial 	  	 string
-	Catigories 	  	 []string
-	Created_at 	  	 string
-	Updated_at	  	 string
-	Likes		  	 int
-	Dislikes	  	 int
-	CommentsCount  	 int
-	IsEdited	  	 bool
-	IsLikedByUser 	 bool
+	Id               int
+	Title            string
+	PublisherId      int
+	Content          string
+	Publisher        string
+	Initial          string
+	Catigories       []string
+	Created_at       string
+	Updated_at       string
+	Likes            int
+	Dislikes         int
+	CommentsCount    int
+	IsEdited         bool
+	IsLikedByUser    bool
 	IsDislikedByUser bool
-	HasCategories 	 bool
-	Owned 		  	 bool
+	HasCategories    bool
+	Owned            bool
 }
 
 type PageData struct {
@@ -84,8 +84,8 @@ const (
 	DATABASE_NAME = "sqlite3"
 
 	// database paths
-	DATABASE_LOCATION        = "../../database/forum.db"
-	DATABASE_SCHEMA_LOCATION = "../../database/schema.sql"
+	DATABASE_LOCATION        = "./database/forum.db"
+	DATABASE_SCHEMA_LOCATION = "./database/schema.sql"
 
 	// error messages
 	FAILED_OPEN_DATABES     = "failed to open the database: %v"
@@ -113,9 +113,9 @@ const (
 // IT major fields
 var IT_MAJOR_FIELDS = map[string]bool{
 	"Software Engineering": true,
-	"Cybersecurity": true,
-	"DevOps and SRE":   true,
-	"Database Systems": true,
+	"Cybersecurity":        true,
+	"DevOps and SRE":       true,
+	"Database Systems":     true,
 }
 
 // users limitations

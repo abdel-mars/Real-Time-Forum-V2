@@ -61,7 +61,7 @@ export async function homeBuild(user) {
   // Logo handler !!
   const logoDiv = createEl("div", "header__logo", `
     <a id = "Logo" class="header__logo-link">
-      <img id = "Logo" src="/static/assets/logo-4um.svg" alt="4um" class="brand-logo" width="140" height="auto">
+      <img id = "Logo" src="/assets/logo-4um.svg" alt="4um" class="brand-logo" width="140" height="auto">
     </a>
   `);
 
@@ -71,7 +71,7 @@ export async function homeBuild(user) {
 
   // Menu button for small screens
   const menuButton = createEl("button", "header__menu-button", `
-    <img src="/static/svg/settings.svg" alt="Menu" class="menu-icon">
+    <img src="/svg/settings.svg" alt="Menu" class="menu-icon">
   `);
   menuButton.setAttribute('aria-label', 'Toggle menu');
   actionsDiv.appendChild(menuButton);
@@ -83,7 +83,7 @@ export async function homeBuild(user) {
   const ul = createEl("ul");
   const liDropdown = createEl("li", "profile-dropdown");
   const filterDiv = createEl("div", "header__filter-label");
-  filterDiv.innerHTML = ` <img src="/static/svg/incon_filter.svg" alt="Filter by Categories"> Filter `;
+  filterDiv.innerHTML = ` <img src="/svg/incon_filter.svg" alt="Filter by Categories"> Filter `;
   liDropdown.appendChild(filterDiv);
   // Make the filter label accessible and interactive
   filterDiv.setAttribute('role', 'button');
@@ -158,7 +158,7 @@ export async function homeBuild(user) {
   // Create Post Button !!
   const postDiv = createEl("div", "nes_post--header", `
     <a href="#" id = "Newpost" aria-label="Crea newpost" >
-      <img class="SvgImg" src="/static/svg/pencil-linee.svg" alt="New post icon">
+      <img class="SvgImg" src="/svg/pencil-linee.svg" alt="New post icon">
       Create Post
     </a>
   `);
@@ -178,7 +178,7 @@ export async function homeBuild(user) {
           <ul>
             <li>
               <a href="#" id ="Out" class="header__profile-link">
-                <img src="/static/svg/log-out.svg" class="header__profile-icon" data-action="logout"> Logout
+                <img src="/svg/log-out.svg" class="header__profile-icon" data-action="logout"> Logout
               </a>
             </li>
           </ul>

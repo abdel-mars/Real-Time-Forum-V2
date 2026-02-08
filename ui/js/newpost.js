@@ -10,7 +10,7 @@ export async function NewPost(categories = [], user) {
     const link = document.createElement("link");
     link.id = "Css";
     link.rel = "stylesheet";
-    link.href = "/static/css/new_post.css";
+    link.href = "/css/new_post.css";
     document.head.appendChild(link);
   }
 
@@ -39,7 +39,7 @@ export async function NewPost(categories = [], user) {
   }
   if (mobileHeader) {
     mobileHeader.innerHTML = `
-      <img id="Logo" src="/static/assets/logo-4um.svg" alt="4um" class="brand-logo" width="140" height="auto">
+      <img id="Logo" src="/assets/logo-4um.svg" alt="4um" class="brand-logo" width="140" height="auto">
       <div class="mobileHeader_profile">
         <nav class="profile-nav">
           <ul>
@@ -49,7 +49,7 @@ export async function NewPost(categories = [], user) {
                 <div class="username">${user.Username || ""}</div>
               </div>
               <ul>
-                <li><a id ="Out"> <img src="/static/svg/log-out.svg" /> Logout</a></li>
+                <li><a id ="Out"> <img src="/svg/log-out.svg" /> Logout</a></li>
               </ul>
             </li>
           </ul>

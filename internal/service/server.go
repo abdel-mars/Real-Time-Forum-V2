@@ -1,15 +1,17 @@
 package service
 
 import (
+	"fmt"
+	"log"
+	"net/http"
+
 	auth "forum/internal/auth"
 	db "forum/internal/db"
 	handler "forum/internal/handler"
 	middleware "forum/internal/middleware"
 	repo "forum/internal/repository"
 	utils "forum/internal/utils"
-	"fmt"
-	"log"
-	"net/http"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -69,7 +71,12 @@ func forumMux() *http.ServeMux {
 	// Comment functionality
 	forumux.HandleFunc("/comment", middleware.AuthMidleware(handler.CommentHandler))
 
-	// Static file serving
+	// Static file serving: serve ui assets directly and keep legacy /static/ handler
+	forumux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("./ui/js"))))
+	forumux.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./ui/css"))))
+	forumux.Handle("/svg/", http.StripPrefix("/svg/", http.FileServer(http.Dir("./ui/svg"))))
+	forumux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("./ui/assets"))))
+	// keep legacy /static/ route for compatibility
 	forumux.HandleFunc("/static/", handler.StaticHandler)
 
 	// WebSocket endpoints

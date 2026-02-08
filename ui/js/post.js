@@ -4,7 +4,7 @@ export async function POST(id, user, page = 1) {
     const link = document.createElement('link');
     link.id = "cssPOST"
     link.rel = 'stylesheet';
-    link.href = '/static/css/post.css';
+    link.href = '/css/post.css';
     document.head.appendChild(link);
   }
 
@@ -21,7 +21,7 @@ export async function POST(id, user, page = 1) {
   }
   if (mobileHeader) {
     mobileHeader.innerHTML = `
-<img id="Logo" src="/static/assets/logo-4um.svg" alt="4um" class="brand-logo" width="140" height="auto"><div class="mobileHeader_profile">
+<img id="Logo" src="/assets/logo-4um.svg" alt="4um" class="brand-logo" width="140" height="auto"><div class="mobileHeader_profile">
         <nav class="profile-nav">
           <ul>
             <li class="profile-dropdown">
@@ -31,7 +31,7 @@ export async function POST(id, user, page = 1) {
               </div>
               <ul>
             </li>
-                <li><a id ="Out"> <img src="/static/svg/log-out.svg" /> Logout</a></li>
+                <li><a id ="Out"> <img src="/svg/log-out.svg" /> Logout</a></li>
               </ul>
             </li>
           </ul>
@@ -100,14 +100,14 @@ export function Create({ post, comments = [], user, footerEl, Pagination = null 
             <form action="/like" method="POST">
               <input type="hidden" name="post_id" value="${post.Id}">
               <button type="submit" class="likebtn">
-                <img src="/static/svg/${post.IsLikedByUser ? 'likee' : 'green_likee'}.svg" alt="like">
+                <img src="/svg/${post.IsLikedByUser ? 'likee' : 'green_likee'}.svg" alt="like">
                 ${post.Likes}
               </button>
             </form>
             <form action="/dislike" method="POST">
               <input type="hidden" name="post_id" value="${post.Id}">
               <button type="submit" class="dislikebtn">
-                <img src="/static/svg/${post.IsDislikedByUser ? 'dislikee' : 'red_dislikee'}.svg" alt="dislike">
+                <img src="/svg/${post.IsDislikedByUser ? 'dislikee' : 'red_dislikee'}.svg" alt="dislike">
                 ${post.Dislikes}
               </button>
             </form>
@@ -123,7 +123,7 @@ export function Create({ post, comments = [], user, footerEl, Pagination = null 
       <form id="form_comment" action="#" method="POST">
         <input type="hidden" name="post_id" value="${post.Id}">
         <textarea id="comment" name="comment" placeholder="comment..." minlength="1" maxlength="1000" required></textarea>
-        <button type="submit"><img src="/static/svg/send.svg" alt="comment"></button>
+        <button type="submit"><img src="/svg/send.svg" alt="comment"></button>
       </form>
     </div>
   `;
@@ -153,10 +153,10 @@ export function Create({ post, comments = [], user, footerEl, Pagination = null 
                      data-page="${Pagination.curent - 1}" 
                      data-post-id="${post.Id}" 
                      aria-label="Previous page">
-               <img src="/static/svg/left.svg" alt="previous page"> Previous Page
+               <img src="/svg/left.svg" alt="previous page"> Previous Page
              </button>` :
         `<span class="post-nav__btn post-nav__btn--prev post-nav__btn--disabled" aria-label="Previous page">
-               <img src="/static/svg/left.svg" alt="previous page">
+               <img src="/svg/left.svg" alt="previous page">
              </span>`
       }
       <span class="post-nav__status" aria-current="page">Page ${Pagination.curent}</span>
@@ -165,10 +165,10 @@ export function Create({ post, comments = [], user, footerEl, Pagination = null 
                      data-page="${Pagination.curent + 1}" 
                      data-post-id="${post.Id}" 
                      aria-label="Next page">
-               Next Page <img src="/static/svg/right.svg" alt="next page">
+               Next Page <img src="/svg/right.svg" alt="next page">
              </button>` :
         `<span class="post-nav__btn post-nav__btn--next post-nav__btn--disabled" aria-label="Next page">
-               <img src="/static/svg/right.svg" alt="next page">
+               <img src="/svg/right.svg" alt="next page">
              </span>`
       }
     </nav>
@@ -230,13 +230,13 @@ export function Create({ post, comments = [], user, footerEl, Pagination = null 
     const dislikeBtn = container.querySelector('.dislikebtn');
     if (likeBtn && result.Likes !== undefined) {
       likeBtn.innerHTML = `
-        <img src="/static/svg/${result.IsLikedByUser ? 'likee' : 'green_likee'}.svg" alt="like">
+        <img src="/svg/${result.IsLikedByUser ? 'likee' : 'green_likee'}.svg" alt="like">
         ${result.Likes}
       `;
     }
     if (dislikeBtn && result.Dislikes !== undefined) {
       dislikeBtn.innerHTML = `
-        <img src="/static/svg/${result.IsDislikedByUser ? 'dislikee' : 'red_dislikee'}.svg" alt="dislike">
+        <img src="/svg/${result.IsDislikedByUser ? 'dislikee' : 'red_dislikee'}.svg" alt="dislike">
         ${result.Dislikes}
       `;
     }
