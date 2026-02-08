@@ -244,7 +244,7 @@ export function Create({ post, comments = [], user, footerEl, Pagination = null 
   // Footer 
   if (footerEl) {
     footerEl.innerHTML = `<div class="footer-container">
-      <p>&copy; 2025 4um — Built with passion</p>
+      <p>&copy; 2026 4um — Built with passion</p>
     </div>`;
   }
   const paginationBtns = document.querySelectorAll('.post-nav__action');

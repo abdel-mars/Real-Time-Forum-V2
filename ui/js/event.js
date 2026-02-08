@@ -77,7 +77,7 @@ export async function loginbuilding(user) {
   const footer = createEl("footer");
   footer.innerHTML = `
     <div class="footer-container">
-      <p>&copy; 2025 4um — Built with passion</p>
+      <p>&copy; 2026 4um — Built with passion</p>
     </div>
   `;
 

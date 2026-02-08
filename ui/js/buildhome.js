@@ -214,7 +214,7 @@ export async function homeBuild(user) {
   }
   foot.innerHTML = `
     <div class="footer__container">
-      <p class="footer__text">&copy; 2025 4um — Built with passion</p>
+      <p class="footer__text">&copy; 2026 4um — Built with passion</p>
     </div>
   `
 }
