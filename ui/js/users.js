@@ -134,13 +134,28 @@ export function initUserWebSocket(onUsersUpdate) {
         userWebSocket.addEventListener('message', (event) => {
             try {
                 const data = JSON.parse(event.data);
-                // Throttle user list refreshes to prevent rate limiting
+                
+                // Handle different message types
+                // user_joined and user_left are critical presence events - process immediately
+                if (data.type === 'user_joined' || data.type === 'user_left') {
+                    console.log(`Presence event received: ${data.type} - ${data.username}`);
+                    // Immediately refresh user list without throttle for presence events
+                    loadUsersWithStatus().then(users => {
+                        if (users && onUsersUpdate) {
+                            onUsersUpdate(users);
+                        }
+                    }).catch(err => console.error('Error refreshing users after presence event:', err));
+                    return;
+                }
+                
+                // Throttle user list refreshes for general updates to prevent rate limiting
                 const now = Date.now();
                 if (now - lastRefresh < REFRESH_THROTTLE) {
                     return;
                 }
-                // Handle different message types
-                if (data.type === 'users_update' || data.type === 'user_joined' || data.type === 'user_left') {
+                
+                // Handle users_update (general broadcast)
+                if (data.type === 'users_update') {
                     lastRefresh = now;
                     // Add delay before refresh to prevent rate limiting
                     setTimeout(() => {
