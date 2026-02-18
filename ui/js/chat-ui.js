@@ -152,22 +152,26 @@ export async function loadChatHistory(otherUserId, limit = 10, offset = 0) {
     } else {
       // Loading older messages - insert at top
       const scrollHeight = container.scrollHeight;
-      // Insert older messages at the top (avoid duplicating the current first message)
+      // Insert older messages at the top (avoid duplicating by ID)
       messages.reverse().forEach((m) => {
         const isSent = String(m.sender_id) === String(window.currentUserId);
-        // Basic dedupe: if the top-most message already matches this one, skip it
-        const firstMsgEl = container.querySelector('.message-row');
-        if (firstMsgEl) {
-          const firstText = firstMsgEl.querySelector('.message-text')?.textContent || '';
-          const firstSender = firstMsgEl.querySelector('.message-sender')?.textContent || '';
-          const incomingSender = isSent ? window.currentUsername : window.activeChatUsername;
-          if (firstText === (m.message || '') && firstSender === incomingSender) {
-            // skip duplicate
-            return;
+        
+        // Check for duplicate by message ID (only for real positive IDs)
+        const msgId = m.id || m.ID;
+        if (msgId && msgId > 0) {
+          const existingMessages = container.querySelectorAll('.message-row');
+          for (const msgEl of existingMessages) {
+            if (msgEl.dataset.messageId === String(msgId)) {
+              return; // skip duplicate
+            }
           }
         }
 
         const el = createMessageElement(m, isSent);
+        // Store message ID for deduplication
+        if (msgId) {
+          el.dataset.messageId = String(msgId);
+        }
         container.insertBefore(el, container.firstChild);
       });
       container.scrollTop = container.scrollHeight - scrollHeight;
@@ -199,23 +203,28 @@ export function displayMessage(message, isSent) {
   const container = document.getElementById("chatMessagesContainer");
   if (!container) return;
 
-  // Deduplicate: if last message in the container has same sender and text, skip
-  const lastMsgEl = [...container.querySelectorAll('.message-row')].pop();
-  const incomingText = message.message || '';
-  const incomingSender = isSent ? window.currentUsername : window.activeChatUsername;
-  if (lastMsgEl) {
-    const lastText = lastMsgEl.querySelector('.message-text')?.textContent || '';
-    const lastSender = lastMsgEl.querySelector('.message-sender')?.textContent || '';
-    const lastTime = lastMsgEl.querySelector('.message-time')?.textContent || '';
-    // Compare text and sender; also allow slight timestamp differences
-    if (lastText === incomingText && lastSender === incomingSender) {
-      return; // skip duplicate
+  // Deduplicate by message ID - if we already have this message, skip it
+  // Only deduplicate if message has a real positive ID (not a temporary negative ID)
+  const messageId = message.id || message.ID;
+  if (messageId && messageId > 0) {
+    const existingMessages = container.querySelectorAll('.message-row');
+    for (const msgEl of existingMessages) {
+      if (msgEl.dataset.messageId === String(messageId)) {
+        console.log('Skipping duplicate message by ID:', messageId);
+        return;
+      }
     }
   }
 
   maybeAddDateSeparator(container, message.created_at);
 
   const el = createMessageElement(message, isSent);
+  
+  // Store the message ID on the element for deduplication (only if it's a real positive ID)
+  if (messageId) {
+    el.dataset.messageId = String(messageId);
+  }
+  
   container.appendChild(el);
 
   // Trim messages to keep only last MAX_VISIBLE_MESSAGES to avoid UI overflow

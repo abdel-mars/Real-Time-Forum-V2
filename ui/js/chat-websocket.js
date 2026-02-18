@@ -64,28 +64,29 @@ export function setupChatWebSocket(user1, user2) {
                     try {
                         hideTypingIndicator();
 
+                        // Always include the ID from the server when available
+                        const message = {
+                            id: data.id || data.ID,
+                            message: data.message,
+                            sender_id: isSent ? window.currentUserId : window.activeChatUserId,
+                            receiver_id: isSent ? window.activeChatUserId : window.currentUserId,
+                            created_at: data.created_at || new Date().toISOString()
+                        };
+
+                        // Display message for both sent and received messages
+                        // For received messages, only display if from active chat
                         if (!isSent && data.name === window.activeChatUsername) {
-                            const message = {
-                                message: data.message,
-                                sender_id: isSent ? window.currentUserId : window.activeChatUserId,
-                                receiver_id: isSent ? window.activeChatUserId : window.currentUserId,
-                                created_at: data.created_at || new Date().toISOString()
-
-                            };
-
-
                             displayMessage(message, isSent);
                             scrollToBottom();
+                        } else if (isSent) {
+                            // For sent messages, always update the user list order
+                            // The local display is handled in sendMessage()
+                            updateUserListOrder(window.activeChatUsername, data.message);
                         }
 
                         if (!isSent) {
                             addUnreadMessage(data.name);
                             showNotification(data.name);
-                        }
-
-                        if (isSent) {
-                            updateUserListOrder(window.activeChatUsername, data.message);
-                        } else {
                             updateUserListOrder(data.name, data.message);
                         }
 
@@ -283,7 +284,10 @@ export function sendMessage() {
     // SECOND: Update UI (if this fails, do NOT restore input since message was sent)
     try {
         // Display the message locally for the sender immediately
+        // Use a temporary negative ID to mark this as a local unsaved message
+        // The actual ID will come from the server response
         const localMessage = {
+            id: -Date.now(), // Temporary negative ID to identify this as a local message
             message: message,
             sender_id: window.currentUserId,
             receiver_id: window.activeChatUserId,
