@@ -117,7 +117,7 @@ export function initUserWebSocket(onUsersUpdate) {
     try {
         userWebSocket = new WebSocket(wsUrl);
         
-        userWebSocket.addEventListener('open', () => {
+        userWebSocket.addEv  entListener('open', () => {
             reconnectAttempts = 0;
             
             // Request initial user list with status
