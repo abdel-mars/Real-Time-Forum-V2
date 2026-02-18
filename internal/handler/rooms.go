@@ -1,13 +1,14 @@
 package handler
 
 import (
+	"encoding/json"
 	auth "forum/internal/auth"
 	db "forum/internal/db"
-	"encoding/json"
 	"log"
 	"net/http"
 	"sort"
 	"strings"
+
 	"github.com/gorilla/websocket"
 )
 
@@ -91,6 +92,7 @@ type ChatMessageData struct {
 	Message   string `json:"message"`
 	SenderID  int    `json:"sender_id,omitempty"`
 	CreatedAt string `json:"created_at,omitempty"`
+	ID        int    `json:"id,omitempty"`
 }
 
 // Run handles all room events
@@ -144,12 +146,13 @@ func (r *room) Run() {
 							// Save message to database
 							err := db.SaveChatMessage(senderID, receiverID, chatMsg.Message)
 							if err == nil {
-								// IMPORTANT: Retrieve the saved message to get the created_at timestamp
+								// IMPORTANT: Retrieve the saved message to get the ID and created_at timestamp
 								messages, err := db.GetChatMessages(senderID, receiverID, 1, 0)
 								if err == nil && len(messages) > 0 {
-									// Update the message with the actual created_at from database
+									// Update the message with the actual ID and created_at from database
+									chatMsg.ID = messages[0].ID
 									chatMsg.CreatedAt = messages[0].CreatedAt
-									// Re-marshal with updated timestamp
+									// Re-marshal with updated ID and timestamp
 									if updatedMsg, err := json.Marshal(chatMsg); err == nil {
 										msg = updatedMsg
 									}
